@@ -17,6 +17,10 @@ def print_help():
     print("        Example: app.py ls @house +projectA")
     print("    add: Add a new todo")
     print("        Example: app.py add")
+    print("    done: Complete a task")
+    print("        Example: app.py done 2")
+    print("    del or delete: Removes completed tasks from file")
+    print("        Example: app.py del")
     sys.exit()
 
 def get_action(args):
@@ -188,6 +192,19 @@ def replace_line(file_name, line_num, text):
     out.writelines(lines)
     out.close()
 
+def removeCompletedTasks(folder_loc):
+    file_loc = folder_loc + "todo.txt"
+    with open(file_loc, 'r') as file:
+        lines = file.readlines()
+
+    # delete matching content
+    content = "This line doesn't belong"
+    with open(file_loc, 'w') as file:
+        for line in lines:
+            # readlines() includes a newline character
+            if line[0] != "x":
+                file.write(line)
+
 if __name__ == "__main__":
     action = get_action(sys.argv)
     if action == "help":
@@ -212,6 +229,10 @@ if __name__ == "__main__":
                 print("Task {} marked as complete".format(sys.argv[2]))
         else:
             print("Make sure you are providing a number after the done flag")
+    elif action == "del" or action == "delete":
+        removeCompletedTasks(folder)
+        print("All completed tasks have been deleted from the todo.txt file")
     else:
-        print(action)
+        print("Action not recognised")
+        print_help()
 
