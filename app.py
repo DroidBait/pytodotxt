@@ -151,19 +151,42 @@ def addNewTodo():
     print("Enter a new todo: leave input blank if not needed")
     priority = input("Enter Priority (A - Z): ")
     validPriority = isPriorityValid(priority)
+
     task = input("Enter task description: ")
     validTask = validateTaskText(task)
+
     print("If entering multiple projects or contexts put a , between each. Not needed for singular item")
     projects = input("Enter project(s): ")
     validatedProjs = setupProjects(projects)
+
     contexts = input("Enter context(s): ")
     validatedContexts = setupContexts(contexts)
+
     due_date = input("Enter due date YYYY-MM-DD: ")
     validDate = validateDueDate(due_date)
+
     textToAdd = validPriority + validTask + validatedProjs + validatedContexts + validDate + "\n"
     addToFile(folder, textToAdd)
     print("Text: " + textToAdd + "Added to file")
     sys.exit()
+
+def getTaskFromNumber(folder_loc, num):
+    file_loc = folder_loc + "todo.txt"
+    current_line_num = 0
+    with open(file_loc) as f:
+        for line in f:
+            current_line_num = current_line_num + 1
+            if current_line_num == int(num):
+                return line
+    print("Task not found")
+    sys.exit()
+
+def replace_line(file_name, line_num, text):
+    lines = open(file_name, 'r').readlines()
+    lines[line_num] = text
+    out = open(file_name, 'w')
+    out.writelines(lines)
+    out.close()
 
 if __name__ == "__main__":
     action = get_action(sys.argv)
@@ -178,6 +201,17 @@ if __name__ == "__main__":
             print_todos(todos=todos)
     elif action == "add":
         addNewTodo()
+    elif action == "done":
+        if len(sys.argv) > 2:
+            numberSelected = sys.argv[2]
+            taskToComplete = getTaskFromNumber(folder, numberSelected)
+            if taskToComplete[0] == "x":
+                print("Task has already been marked as complete")
+            else:
+                replace_line(folder + "todo.txt", int(sys.argv[2]) - 1, "x " + taskToComplete)
+                print("Task {} marked as complete".format(sys.argv[2]))
+        else:
+            print("Make sure you are providing a number after the done flag")
     else:
         print(action)
 
