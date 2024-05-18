@@ -1,4 +1,3 @@
-import os
 import sys
 import configparser
 import re
@@ -235,4 +234,3 @@ if __name__ == "__main__":
     else:
         print("Action not recognised")
         print_help()
-
