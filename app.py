@@ -34,13 +34,23 @@ def get_list_of_lines_in_file(folder_loc):
             list_of_lines.append(str(current_line_num) + " " + line)
     return list_of_lines
 
+def removeCompletedTodos(todos):
+    non_completed_todos = []
+    for todo in todos:
+        if todo[2] != "x":
+            non_completed_todos.append(todo)
+    return non_completed_todos
+
 def print_todos(todos):
     """
-    Prints all todos in a list
+    Prints all todos in a list. 
+    Starts by filtering out all completed todos
+    Prints the rest
     Args:
         todos: list[str]
     """
-    for todo in todos:
+    todo_list = removeCompletedTodos(todos=todos)
+    for todo in todo_list:
         print(todo, end="")
     return
 
