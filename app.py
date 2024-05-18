@@ -27,9 +27,11 @@ def get_action(args):
 def get_list_of_lines_in_file(folder_loc):
     file_loc = folder_loc + "todo.txt"
     list_of_lines = []
+    current_line_num = 0
     with open(file_loc) as f:
         for line in f:
-            list_of_lines.append(line)
+            current_line_num = current_line_num + 1
+            list_of_lines.append(str(current_line_num) + " " + line)
     return list_of_lines
 
 def print_todos(todos):
