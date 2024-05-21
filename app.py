@@ -1,6 +1,7 @@
 import sys
 import configparser
 import re
+import datetime
 
 config = configparser.ConfigParser()
 config.read("config.ini")
@@ -20,6 +21,8 @@ def print_help():
     print("        Example: app.py done 2")
     print("    del or delete: Removes completed tasks from file")
     print("        Example: app.py del")
+    print("    schedule or sched: List tasks due today, then list overdue tasks")
+    print("        Example: app.py sched")
     sys.exit()
 
 def get_action(args):
@@ -204,6 +207,34 @@ def removeCompletedTasks(folder_loc):
             if line[0] != "x":
                 file.write(line)
 
+def scheduledTasks(todos):
+    todaysDate = datetime.datetime.now()
+    dueToday = []
+    overdue = []
+
+    for todo in todos:
+        if 'due:' in todo:
+            linesplit = todo.split("due:")[1]
+            dateOfTask = linesplit[0:10]
+            dateObj = datetime.datetime.strptime(dateOfTask, "%Y-%m-%d")
+            if dateObj.date() < todaysDate.date():
+                overdue.append(todo)
+            if dateObj.date() == todaysDate.date():
+                dueToday.append(todo)
+    
+    return dueToday, overdue
+
+def printScheduledTasks(dueToday, overdue):
+    if len(dueToday) == 0 and len(overdue) == 0:
+        print("There are no tasks due today or overdue")
+    if len(dueToday) > 0:
+        print("Todays Tasks:")
+        print_todos(dueToday)
+        print(" ")
+    if len(overdue) > 0:
+        print("Overdue Tasks:")
+        print_todos(overdue)
+
 if __name__ == "__main__":
     action = get_action(sys.argv)
     if action == "help":
@@ -231,6 +262,10 @@ if __name__ == "__main__":
     elif action == "del" or action == "delete":
         removeCompletedTasks(folder)
         print("All completed tasks have been deleted from the todo.txt file")
+    elif action == "schedule" or action == "sched":
+        todos = get_list_of_lines_in_file(folder)
+        dueToday, overdue = scheduledTasks(todos)
+        printScheduledTasks(dueToday, overdue)
     else:
         print("Action not recognised")
         print_help()
