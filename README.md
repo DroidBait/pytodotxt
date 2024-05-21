@@ -14,3 +14,4 @@ list / ls (supports filtering based on input text)
 add
 done
 delete / del
+schedule / sched
