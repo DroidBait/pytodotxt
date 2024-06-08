@@ -23,6 +23,8 @@ def print_help():
     print("        Example: app.py del")
     print("    schedule or sched: List tasks due today, then list overdue tasks")
     print("        Example: app.py sched")
+    print("    edit:")
+    print("         Example: app.py edit 3")
     sys.exit()
 
 def get_action(args):
@@ -235,6 +237,11 @@ def printScheduledTasks(dueToday, overdue):
         print("Overdue Tasks:")
         print_todos(overdue)
 
+def makeEdit(todos, line_num):
+    taskToEdit = todos[int(line_num) - 1]
+    updatedTask = input("Enter new text for task {}".format(taskToEdit[2:]))
+    replace_line(folder + "todo.txt", int(line_num) - 1, updatedTask + "\n")
+
 if __name__ == "__main__":
     action = get_action(sys.argv)
     if action == "help":
@@ -266,6 +273,12 @@ if __name__ == "__main__":
         todos = get_list_of_lines_in_file(folder)
         dueToday, overdue = scheduledTasks(todos)
         printScheduledTasks(dueToday, overdue)
+    elif action == "edit":
+        todos = get_list_of_lines_in_file(folder)
+        if len(sys.argv) > 2:
+            makeEdit(todos, sys.argv[2])
+        else:
+            print("A number needs to be supplied with this function")
     else:
         print("Action not recognised")
         print_help()

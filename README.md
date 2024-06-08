@@ -15,3 +15,4 @@ add
 done
 delete / del
 schedule / sched
+edit
